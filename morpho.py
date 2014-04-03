@@ -96,7 +96,8 @@ class Morpho(object):
 		self.yap("longest known suffix: {0}".format(suffix))
 		remaining = w[:w.rfind(suffix)]
 		#add y
-		if suffix.startswith("iz") and not remaining.endswith("l"):
+		if (suffix.startswith("iz") and not remaining.endswith("l")) or \
+		(remaining.endswith("f")):
 			remaining += "y"
 		suffix = "-" + suffix
 		return self.longest_suffix(remaining) + suffix if remaining else ""
