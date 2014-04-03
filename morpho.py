@@ -17,6 +17,10 @@ class Morpho(object):
 
 		self.verbose = verbose
 	
+	def yap(self, msg):
+		if self.verbose:
+			print msg
+
 	def assign_wordlist(self, wl=None):
 		default_wl = "words"
 		if os.path.exists(wl):
@@ -89,7 +93,7 @@ class Morpho(object):
 		if not candidates: return ""
 		
 		suffix = max(candidates, key=lambda x: len(x))
-		print "longest known suffix: {0}".format(suffix)
+		self.yap("longest known suffix: {0}".format(suffix))
 		remaining = w[:w.rfind(suffix)]
 		#add y
 		if suffix.startswith("iz") and not remaining.endswith("l"):
@@ -115,10 +119,12 @@ class Morpho(object):
 		if not candidates: return ""
 		
 		prefix = max(candidates, key=lambda x: len(x))
-		print "longest known prefix: {0}".format(prefix)
-		remaining = w[len(prefix):]
-		print "remaining: {0}".format(remaining)
 		
+		self.yap("longest known prefix: {0}".format(prefix))
+		remaining = w[len(prefix):]
+		self.yap("remaining: {0}".format(remaining))
+		prefix = prefix + "-"
+
 		return prefix + self.longest_prefix(remaining) if remaining else ""
 
 	def suffix_backoff(self, w):
@@ -153,9 +159,13 @@ class Morpho(object):
 	def core_morpheme(self, w):
 		"""
 		"""
-		return w[:w.rfind(self.get_prefix(w))]
+		pre = self.get_prefix(w)
+		pre = pre.replace("-","")
+		suf = self.get_suffix(w)
+		suf = suf.replace("-","")
+		return (w.split(pre)[-1]).split(suf)[0]
 
-	def greatest_substring(w1, w2):
+	def greatest_substring(self, w1, w2):
 		"""
 		"""
 		substrings = set()
@@ -174,22 +184,32 @@ class Morpho(object):
 		pre = self.longest_prefix(w)
 		if not pre:
 			return ""
-		print "longest prefix: {0}".format(pre)
+		self.yap("longest prefix: {0}".format(pre))
 		suf = self.get_suffix(w)
-		print "longest suffix: {0}".format(suf)
+		self.yap("longest suffix: {0}".format(suf))
 		shared = self.greatest_substring(pre, suf)
-		print "longest substring: {0}".format(shared)
+		self.yap("longest substring: {0}".format(shared))
 		return pre.split(shared)[0]
 
 	def smart_suffix(self, w):
 		pre = self.longest_prefix(w)
 		if not pre:
 			return ""
-		print "longest prefix: {0}".format(pre)
+		self.yap("longest prefix: {0}".format(pre))
 		suf = self.get_suffix(w)
-		print "longest suffix: {0}".format(suf)
+		self.yap("longest suffix: {0}".format(suf))
 		shared = self.greatest_substring(pre, suf)
-		print "longest substring: {0}".format(shared)
+		self.yap("longest substring: {0}".format(shared))
 		return suf.split(shared)[-1]
 
-
+def demo():
+	print "\n{0}\n| Demo for morpho |\n{0}".format("-"*19)
+	m = Morpho()
+	veg = "antivegetarianistic"
+	print " core morpheme for {0}:\t{1}".format(veg, m.core_morpheme(veg))
+	print "\tprefix for {0}:\t{1}".format(veg, m.get_prefix(veg))
+	print "\tsuffix for {0}:\t{1}".format(veg, m.get_suffix(veg))
+	print
+	
+if __name__ == "__main__":
+	demo()
