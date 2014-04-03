@@ -68,13 +68,14 @@ class Morpho(object):
 		if reverse: 
 			letter = w[-1]
 
+		#constrain searches
 		for w in words:
 		    word_lookup[letter].add(w)
 		
 		wordlist = []
-		#these are sets
+		#these values are all sets
 		for v in word_lookup.values():
-			#concatenate lists
+			#concatenate lists (from sets)
 			wordlist += list(v)
 		return word_lookup
 
@@ -95,7 +96,7 @@ class Morpho(object):
 		suffix = max(candidates, key=lambda x: len(x))
 		self.yap("longest known suffix: {0}".format(suffix))
 		remaining = w[:w.rfind(suffix)]
-		#add y
+		#add y; this sort of stuff should be moved into a constraints method...
 		if (suffix.startswith("iz") and not remaining.endswith("l")) or \
 		(remaining.endswith("f")):
 			remaining += "y"
@@ -130,6 +131,7 @@ class Morpho(object):
 
 	def suffix_backoff(self, w):
 		"""
+		alternative extraction for unknown affixes
 		"""
 		f = w[0]
 		candidates = [c for c in self.word_lookup[f] if c in w]
@@ -138,7 +140,7 @@ class Morpho(object):
 
 	def prefix_backoff(self, w):
 		"""
-		need a different word look up (keys should be final characters)
+		alternative extraction unknown affixes
 		"""
 		l = w[-1]
 		candidates = [c for c in self.word_rev_lookup[l] if c in w]
