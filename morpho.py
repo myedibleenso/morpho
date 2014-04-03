@@ -164,9 +164,25 @@ class Morpho(object):
 		"""
 		pre = self.get_prefix(w)
 		pre = pre.replace("-","")
+		pre_remaining = ""
+
+		if pre:
+			pre_remaining = w.split(pre)[-1]
+			self.yap("pre remaining: {0}".format(pre_remaining))
+		
 		suf = self.get_suffix(w)
 		suf = suf.replace("-","")
-		return (w.split(pre)[-1]).split(suf)[0]
+		suf_remaining = ""
+
+		if suf:
+			suf_remaining = w.split(suf)[0]
+			self.yap("suf remaining: {0}".format(suf_remaining))
+
+		if pre and suf:
+			return self.greatest_substring(pre_remaining, suf_remaining)
+
+		return pre_remaining or suf_remaining
+
 
 	def greatest_substring(self, w1, w2):
 		"""

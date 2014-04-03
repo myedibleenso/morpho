@@ -278,7 +278,6 @@ iz
 ize
 izzle
 ja
-k
 kin
 kind
 kinesis
