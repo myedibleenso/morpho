@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+from __future__ import unicode_literals, division
 from collections import defaultdict
 import os
 
